@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var model = GridModel(height: 30, width: 30)
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        GeometryReader { geo in
+            GridView(model: self.model, height: Int(geo.size.height), width: Int(geo.size.width))
+        }
     }
 }
 
