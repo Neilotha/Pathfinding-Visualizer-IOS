@@ -49,7 +49,7 @@ struct Node: Identifiable {
     }
     
     mutating func toggleStart() {
-        
+        print("start toggled")
         switch self.nodeState {
         // Toggling start node to none-start nodes (empty node or wall node)
         case .start(let wasWall):

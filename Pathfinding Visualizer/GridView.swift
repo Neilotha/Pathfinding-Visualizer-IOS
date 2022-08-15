@@ -15,7 +15,7 @@ struct GridView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> GridController {
         model.updateModel(height: height, width: width)
-        let view = GridController(grid: model.grid, maxColumn: model.maxColumn, maxRow: model.maxRow, nodeSize: model.nodeSize, dragCallBack: model.wallAction(row:column:), endDragCallBack: model.endAction)
+        let view = GridController(grid: model.grid, maxColumn: model.maxColumn, maxRow: model.maxRow, nodeSize: model.nodeSize, dragCallBack: model.handleGridInput(row:column:), endDragCallBack: model.endAction)
         
         return view
     }
