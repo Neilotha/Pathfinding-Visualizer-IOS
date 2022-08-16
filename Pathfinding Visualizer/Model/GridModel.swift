@@ -80,14 +80,14 @@ class GridModel: ObservableObject {
             switch grid[lastUpdatedNode.row][lastUpdatedNode.column].getState() {
             case .start:
                 print("dragging start")
-                guard grid[row][column].getState() != .destination(true) && grid[row][column].getState() != .destination(false)  else { break }
+                guard grid[row][column].getState() != .destination(true) && grid[row][column].getState() != .destination(false)  else { return }
                 grid[lastUpdatedNode.row][lastUpdatedNode.column].toggleStart()
                 grid[row][column].toggleStart()
                 updateNode(row: lastUpdatedNode.row, column: lastUpdatedNode.column, state: grid[lastUpdatedNode.row][lastUpdatedNode.column].getState())
                 updateNode(row: row, column: column, state: grid[row][column].getState())
                 lastUpdatedNode = (row, column)
             case .destination:
-                guard grid[row][column].getState() != .start(true) && grid[row][column].getState() != .start(false)  else { break }
+                guard grid[row][column].getState() != .start(true) && grid[row][column].getState() != .start(false)  else { return }
                 grid[lastUpdatedNode.row][lastUpdatedNode.column].toggleDestination()
                 grid[row][column].toggleDestination()
                 updateNode(row: lastUpdatedNode.row, column: lastUpdatedNode.column, state: grid[lastUpdatedNode.row][lastUpdatedNode.column].getState())

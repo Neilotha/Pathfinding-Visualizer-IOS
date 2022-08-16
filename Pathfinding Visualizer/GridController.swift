@@ -19,15 +19,17 @@ class GridController: UIView {
     let nodeSize: CGFloat
     var dragCallBack: (Int, Int) -> Void
     var endDragCallBack: () -> Void
+    var resetNodeListCallBack: () -> Void
     var nodeViews: Array<Array<NodeView>>!
     
-    init(grid: [[Node]], maxColumn: Int, maxRow: Int, nodeSize: CGFloat, dragCallBack: @escaping (Int, Int) -> Void, endDragCallBack: @escaping () -> Void) {
+    init(grid: [[Node]], maxColumn: Int, maxRow: Int, nodeSize: CGFloat, dragCallBack: @escaping (Int, Int) -> Void, endDragCallBack: @escaping () -> Void, resetNodeListCallBack: @escaping () -> Void) {
         self.grid = grid
         self.maxColumn = maxColumn
         self.maxRow = maxRow
         self.nodeSize = nodeSize
         self.dragCallBack = dragCallBack
         self.endDragCallBack = endDragCallBack
+        self.resetNodeListCallBack = resetNodeListCallBack
         super.init(frame: CGRect(x: 0,
                                  y: 0,
                                  width: CGFloat(maxColumn) * nodeSize,
@@ -117,11 +119,11 @@ class GridController: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        super.draw(rect)
         for nodeInfo in updatedNodes {
             print("node view: [\(nodeInfo.row), \(nodeInfo.column)] update")
             nodeViews[nodeInfo.row][nodeInfo.column].backgroundColor = nodeColor(state: grid[nodeInfo.row][nodeInfo.column].getState())
         }
+        resetNodeListCallBack()
     }
     
     
