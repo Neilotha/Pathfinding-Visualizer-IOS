@@ -91,6 +91,8 @@ class GridController: UIView {
             color = .blue
         case .wall:
             color = .black
+        case .path:
+            color = .yellow
         default:
             color = .white
         }
@@ -120,7 +122,7 @@ class GridController: UIView {
     
     override func draw(_ rect: CGRect) {
         for nodeInfo in updatedNodes {
-            print("node view: [\(nodeInfo.row), \(nodeInfo.column)] update")
+//            print("node view: [\(nodeInfo.row), \(nodeInfo.column)] update")
             nodeViews[nodeInfo.row][nodeInfo.column].backgroundColor = nodeColor(state: grid[nodeInfo.row][nodeInfo.column].getState())
         }
         resetNodeListCallBack()

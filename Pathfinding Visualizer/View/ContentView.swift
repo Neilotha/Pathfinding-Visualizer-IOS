@@ -11,8 +11,12 @@ struct ContentView: View {
     @StateObject var model = GridModel(height: 30, width: 30)
     
     var body: some View {
-        GeometryReader { geo in
-            GridView(model: self.model, height: Int(geo.size.height), width: Int(geo.size.width))
+        VStack {
+            Control_panel_View(model: model)
+        
+            GeometryReader { geo in
+                GridView(model: self.model, height: Int(geo.size.height), width: Int(geo.size.width))
+            }
         }
     }
 }

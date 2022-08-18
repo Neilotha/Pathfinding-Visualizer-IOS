@@ -13,14 +13,22 @@ enum NodeState: Equatable {
     case destination(Bool)
     case wall
     case visited
+    case path
 }
 
 
-struct Node: Identifiable {
+struct Node: Identifiable, Equatable {
+    static func == (lhs: Node, rhs: Node) -> Bool {
+        lhs.row == rhs.row && lhs.column == rhs.column
+    }
+    
     var nodeState: NodeState
     let id = UUID()
     private var row: Int
     private var column: Int
+    var distance: Int = 0
+    var inQueue: Bool = false
+    var previousNode: (row: Int, column: Int)?
     
     init(as state: NodeState, index: (Int, Int)) {
         self.nodeState = state
@@ -37,7 +45,7 @@ struct Node: Identifiable {
     
     mutating func toggleWall() {
         switch self.nodeState {
-        case .empty:
+        case .empty, .visited:
             self.nodeState = .wall
         case .wall:
             self.nodeState = .empty
@@ -82,6 +90,7 @@ struct Node: Identifiable {
             self.nodeState = .visited
         }
     }
+    
     
     
 }

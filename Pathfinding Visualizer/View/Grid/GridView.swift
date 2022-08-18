@@ -24,8 +24,10 @@ struct GridView: UIViewRepresentable {
         print("UIView update triggered!")
         uiView.grid = model.grid
         uiView.updatedNodes = model.upDatedNodeList
-        uiView.setNeedsDisplay()
-//        model.resetUpdatedNodeList()
+        if model.upDatedNodeList.count > 0 {
+            uiView.setNeedsDisplay()
+        }
+
 
     }
 }

@@ -15,6 +15,9 @@
 		4293424E28A60DFA0005D0F2 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4293424D28A60DFA0005D0F2 /* Node.swift */; };
 		4293425028A610CD0005D0F2 /* GridModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4293424F28A610CD0005D0F2 /* GridModel.swift */; };
 		4293425228A651B50005D0F2 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4293425128A651B50005D0F2 /* GridView.swift */; };
+		4293425528AB60D80005D0F2 /* Control panel View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4293425428AB60D80005D0F2 /* Control panel View.swift */; };
+		4293425728AB67F10005D0F2 /* MinPriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4293425628AB67F10005D0F2 /* MinPriorityQueue.swift */; };
+		4293425928AB8C750005D0F2 /* Dijkstra.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4293425828AB8C750005D0F2 /* Dijkstra.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +30,9 @@
 		4293424D28A60DFA0005D0F2 /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		4293424F28A610CD0005D0F2 /* GridModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridModel.swift; sourceTree = "<group>"; };
 		4293425128A651B50005D0F2 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
+		4293425428AB60D80005D0F2 /* Control panel View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Control panel View.swift"; sourceTree = "<group>"; };
+		4293425628AB67F10005D0F2 /* MinPriorityQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinPriorityQueue.swift; sourceTree = "<group>"; };
+		4293425828AB8C750005D0F2 /* Dijkstra.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dijkstra.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,10 +65,7 @@
 		4293423C28A4DADE0005D0F2 /* Pathfinding Visualizer */ = {
 			isa = PBXGroup;
 			children = (
-				4293423D28A4DADE0005D0F2 /* Pathfinding_VisualizerApp.swift */,
-				4293423F28A4DADE0005D0F2 /* ContentView.swift */,
-				4293425128A651B50005D0F2 /* GridView.swift */,
-				4293424B28A4DB780005D0F2 /* GridController.swift */,
+				4293425B28ADEB620005D0F2 /* View */,
 				4293425328A655730005D0F2 /* Model */,
 				4293424128A4DAE10005D0F2 /* Assets.xcassets */,
 				4293424328A4DAE10005D0F2 /* Preview Content */,
@@ -83,8 +86,30 @@
 			children = (
 				4293424D28A60DFA0005D0F2 /* Node.swift */,
 				4293424F28A610CD0005D0F2 /* GridModel.swift */,
+				4293425628AB67F10005D0F2 /* MinPriorityQueue.swift */,
+				4293425828AB8C750005D0F2 /* Dijkstra.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		4293425A28ADEB4C0005D0F2 /* Grid */ = {
+			isa = PBXGroup;
+			children = (
+				4293425128A651B50005D0F2 /* GridView.swift */,
+				4293424B28A4DB780005D0F2 /* GridController.swift */,
+			);
+			path = Grid;
+			sourceTree = "<group>";
+		};
+		4293425B28ADEB620005D0F2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4293423D28A4DADE0005D0F2 /* Pathfinding_VisualizerApp.swift */,
+				4293423F28A4DADE0005D0F2 /* ContentView.swift */,
+				4293425428AB60D80005D0F2 /* Control panel View.swift */,
+				4293425A28ADEB4C0005D0F2 /* Grid */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,12 +182,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4293425528AB60D80005D0F2 /* Control panel View.swift in Sources */,
 				4293425028A610CD0005D0F2 /* GridModel.swift in Sources */,
 				4293424028A4DADE0005D0F2 /* ContentView.swift in Sources */,
 				4293424C28A4DB780005D0F2 /* GridController.swift in Sources */,
+				4293425728AB67F10005D0F2 /* MinPriorityQueue.swift in Sources */,
 				4293423E28A4DADE0005D0F2 /* Pathfinding_VisualizerApp.swift in Sources */,
 				4293425228A651B50005D0F2 /* GridView.swift in Sources */,
 				4293424E28A60DFA0005D0F2 /* Node.swift in Sources */,
+				4293425928AB8C750005D0F2 /* Dijkstra.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
