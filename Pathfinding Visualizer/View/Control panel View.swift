@@ -15,6 +15,7 @@ struct Control_panel_View: View {
             Spacer()
             
             Button("Dijkstra") {
+                model.searched = false
                 model.handleDijkstra()
             }
             

@@ -62,7 +62,13 @@ func dijkstra(grid: inout [[Node]]) -> (visitedNodes: [Node], shortestPath: [Nod
             currentNode = grid[currentNodeIndex.row][currentNodeIndex.column]
             shortestPath?.insert(currentNode, at: 0)
         }
+        
+        shortestPath?.popLast()
+        shortestPath?.removeFirst()
+        
     }
+    visitedNodes.removeFirst()
+
     
     return (visitedNodes, shortestPath)
 }

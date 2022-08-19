@@ -93,7 +93,7 @@ class GridController: UIView {
             color = .black
         case .path:
             color = .yellow
-        default:
+        case .empty:
             color = .white
         }
         
@@ -123,7 +123,7 @@ class GridController: UIView {
     override func draw(_ rect: CGRect) {
         for nodeInfo in updatedNodes {
 //            print("node view: [\(nodeInfo.row), \(nodeInfo.column)] update")
-            nodeViews[nodeInfo.row][nodeInfo.column].backgroundColor = nodeColor(state: grid[nodeInfo.row][nodeInfo.column].getState())
+            nodeViews[nodeInfo.row][nodeInfo.column].backgroundColor = nodeColor(state: nodeInfo.state)
         }
         resetNodeListCallBack()
     }

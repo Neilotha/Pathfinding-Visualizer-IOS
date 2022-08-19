@@ -18,6 +18,7 @@ class GridModel: ObservableObject {
     var lastUpdatedNode = (row: -1, column: -1)
     var draggingNode: Bool = false
     var drawingWall: Bool = false
+    var searched: Bool = false
     
     
 //    initialize the grid with maxRow and maxColumn
@@ -78,7 +79,6 @@ class GridModel: ObservableObject {
         if draggingNode {
             switch grid[lastUpdatedNode.row][lastUpdatedNode.column].getState() {
             case .start:
-                print("dragging start")
                 guard grid[row][column].getState() != .destination(true) && grid[row][column].getState() != .destination(false)  else { return }
                 grid[lastUpdatedNode.row][lastUpdatedNode.column].toggleStart()
                 grid[row][column].toggleStart()
@@ -87,6 +87,11 @@ class GridModel: ObservableObject {
                 
                 updateNode(row: row, column: column, state: grid[row][column].getState())
                 lastUpdatedNode = (row, column)
+                
+//                instant render pathfinding algorithm if is searched
+                if self.searched {
+                    handleDijkstra()
+                }
             case .destination:
                 guard grid[row][column].getState() != .start(true) && grid[row][column].getState() != .start(false)  else { return }
                 grid[lastUpdatedNode.row][lastUpdatedNode.column].toggleDestination()
@@ -96,6 +101,12 @@ class GridModel: ObservableObject {
                 
                 updateNode(row: row, column: column, state: grid[row][column].getState())
                 lastUpdatedNode = (row, column)
+                
+                
+//                instant render pathfinding algorithm if is searched
+                if self.searched {
+                    handleDijkstra()
+                }
             default:
                 break
             }
@@ -139,6 +150,8 @@ class GridModel: ObservableObject {
             }
         }
         
+        searched = false
+        
     }
     
     func handleClearWall() {
@@ -150,6 +163,8 @@ class GridModel: ObservableObject {
                 }
             }
         }
+        
+        searched = false
     }
     
     func clearSearch() {
@@ -171,26 +186,95 @@ class GridModel: ObservableObject {
 //            let index = visitNode.getIndex()
 //            updateNode(row: index.row, column: index.column, state: visitNode.getState())
 //        }
-        animateSearch(result: result)
         
-        if let path = result.shortestPath {
-            for node in path {
-                let index = node.getIndex()
-                updateNode(row: index.row, column: index.column, state: node.getState())
-            }
+        if !searched {
+            animateSearch(result: result)
+            searched = true
         }
+        else {
+            for visitNode in result.visitedNodes {
+                let index = visitNode.getIndex()
+                updateNode(row: index.row, column: index.column, state: .visited)
+            }
+                
+            if let path = result.shortestPath {
+                for node in path {
+                    let index = node.getIndex()
+                    updateNode(row: index.row, column: index.column, state: .path)
+                }
+            }
+            
+            searched = true
+        }
+        
+//        if let path = result.shortestPath {
+//            for node in path {
+//                let index = node.getIndex()
+//                updateNode(row: index.row, column: index.column, state: .path)
+//            }
+//        }
     }
     
     func animateSearch(result: (visitedNodes: [Node], shortestPath: [Node]?)) {
-        var timeOffest = 0.0
-        for node in result.visitedNodes {
-            timeOffest += 0.005
-            DispatchQueue.main.asyncAfter(deadline: .now() + timeOffest) {
-                let index = node.getIndex()
-                self.updateNode(row: index.row , column: index.column, state: node.getState())
+        var i = 0
+        var p = 0
+        _ = Timer.scheduledTimer(withTimeInterval: 0.008, repeats: true) { timer in
+            if i < result.visitedNodes.count {
+                let index = result.visitedNodes[i].getIndex()
+                self.updateNode(row: index.row , column: index.column, state: .visited)
                 self.nodeNeedAnimate.toggle()
+                i += 1
+            }
+            else {
+                if let path = result.shortestPath {
+                    if p < path.count {
+                        let index = path[p].getIndex()
+                        self.updateNode(row: index.row , column: index.column, state: .path)
+                        self.nodeNeedAnimate.toggle()
+                        p += 1
+                    }
+                    else {
+                        timer.invalidate()
+                    }
+                }
             }
         }
+        
+//        if let path = result.shortestPath {
+//            _ = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
+//                if p < path.count {
+//                    let index = path[p].getIndex()
+//                    self.updateNode(row: index.row , column: index.column, state: .path)
+//                    self.nodeNeedAnimate.toggle()
+//                    p += 1
+//                }
+//                else {
+//                    timer.invalidate()
+//                }
+//            }
+//        }
+        
+        
+//        var timeOffest = 0.0
+//        for node in result.visitedNodes {
+//            timeOffest += 0.005
+//            DispatchQueue.main.asyncAfter(deadline: .now() + timeOffest) {
+//                let index = node.getIndex()
+//                self.updateNode(row: index.row , column: index.column, state: .visited)
+//                self.nodeNeedAnimate.toggle()
+//            }
+//        }
+        
+//        if let path = result.shortestPath {
+//            for node in path {
+//                timeOffest += 0.05
+//                DispatchQueue.main.asyncAfter(deadline: .now() + timeOffest) {
+//                    let index = node.getIndex()
+//                    self.updateNode(row: index.row, column: index.column, state: .path)
+//                    self.nodeNeedAnimate.toggle()
+//                }
+//            }
+//        }
     }
 //    appends the updated node's information (row, column, state) to the updatedNodeList for the grid controller to update its views
     func updateNode(row: Int, column: Int, state: NodeState) {
