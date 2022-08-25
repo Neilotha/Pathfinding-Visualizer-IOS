@@ -17,33 +17,30 @@ enum NodeState: Equatable {
 }
 
 
-struct Node: Identifiable, Equatable {
+
+// additional node info for path finding algorithm (may vary between algorithm)
+protocol PriorityInfoProtocol {
+    var distance: Int { set get }
+}
+
+class Node: Equatable {
     static func == (lhs: Node, rhs: Node) -> Bool {
         lhs.row == rhs.row && lhs.column == rhs.column
     }
     
     var nodeState: NodeState
-    let id = UUID()
-    private var row: Int
-    private var column: Int
-    var distance: Int = 0
+    let row: Int
+    let column: Int
     var inQueue: Bool = false
-    var previousNode: (row: Int, column: Int)?
+    var previousNode: Node?
+    var priorityInfo: PriorityInfoProtocol?
     
-    init(as state: NodeState, index: (Int, Int)) {
+    init(as state: NodeState, coordinate: (Int, Int)) {
         self.nodeState = state
-        (self.row, self.column) = index
+        (self.row, self.column) = coordinate
     }
     
-    func getIndex() -> (row: Int, column: Int) {
-        return(self.row, self.column)
-    }
-    
-    func getState() -> NodeState {
-        return nodeState
-    }
-    
-    mutating func toggleWall() {
+    func toggleWall() {
         switch self.nodeState {
         case .empty, .visited:
             self.nodeState = .wall
@@ -56,8 +53,7 @@ struct Node: Identifiable, Equatable {
 //        print("node: [\(row), \(column)] triggered")
     }
     
-    mutating func toggleStart() {
-        print("start toggled")
+    func toggleStart() {
         switch self.nodeState {
         // Toggling start node to none-start nodes (empty node or wall node)
         case .start(let wasWall):
@@ -71,7 +67,7 @@ struct Node: Identifiable, Equatable {
         }
     }
     
-    mutating func toggleDestination() {
+    func toggleDestination() {
         switch self.nodeState {
         // Toggling destination node to none-destination nodes (empty node or wall node)
         case .destination(let wasWall):
@@ -85,11 +81,16 @@ struct Node: Identifiable, Equatable {
         }
     }
     
-    mutating func visite() {
-        if self.nodeState == .empty {
+    func visite() {
+        switch self.nodeState {
+        case .start, .destination:
+            return
+        default:
             self.nodeState = .visited
         }
+        
     }
+    
     
     
     

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var model = GridModel(height: 30, width: 30)
+    @StateObject var model = GridModel()
     
     var body: some View {
         VStack {

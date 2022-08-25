@@ -16,28 +16,43 @@ struct Control_panel_View: View {
             
             Button("Dijkstra") {
                 model.searched = false
-                model.handleDijkstra()
+                model.setAlgorithm(algorithm: dijkstra)
+                model.visualizeAlgorithm()
+            }
+            
+            Spacer()
+            
+            Button("A*") {
+                model.searched = false
+                model.setAlgorithm(algorithm: aStar)
+                model.visualizeAlgorithm()
             }
             
             Spacer()
             
             Button("Reset Board") {
-                model.handleClearGrid()
+                model.searched = false
+                model.clearGrid()
             }
             
             Spacer()
             
             Button("Clear Wall") {
-                model.handleClearWall()
+                model.clearWall()
             }
             
             Spacer()
+            
+            Button("Clear Search") {
+                model.clearSearch()
+            }
+            
         }
     }
 }
 
 struct Control_panel_View_Previews: PreviewProvider {
     static var previews: some View {
-        Control_panel_View(model: GridModel(height: 30, width: 30))
+        Control_panel_View(model: GridModel())
     }
 }

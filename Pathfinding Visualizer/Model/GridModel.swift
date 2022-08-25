@@ -9,66 +9,51 @@ import Foundation
 import SwiftUI
 
 class GridModel: ObservableObject {
-    @Published var grid: [[Node]]
-    @Published var nodeNeedAnimate: Bool = false
-    var upDatedNodeList: [NodeInfo] = []
-    var maxColumn: Int
-    var maxRow: Int
+    @Published var viewNeedUpdate: Bool = false
+    var grid: [[Node]] = []
+    var updatedNodeList: [(row: Int, column: Int, state: NodeState)] = []
+    var maxColumn: Int = 0
+    var maxRow: Int = 0
     let nodeSize: CGFloat = 20
-    var lastUpdatedNode = (row: -1, column: -1)
-    var draggingNode: Bool = false
-    var drawingWall: Bool = false
+    var currentAlgorithm: (([[Node]]) -> (visitedNodes: [Node], shortestPath: [Node]?))?
     var searched: Bool = false
+    var inputState: InputState
+    var lastUpdatedNode = (row: -1, column: -1)
     
     
-//    initialize the grid with maxRow and maxColumn
-    init(height: Int, width: Int) {
-        self.maxColumn = width / Int(nodeSize)
-        self.maxRow = height / Int(nodeSize)
-        self.grid = [[Node]](
-            repeating: [Node](repeating: Node(as: .empty, index: (0, 0)), count: maxColumn),
-            count: maxRow)
-
-        for row in 0 ..< maxRow {
-            for column in 0 ..< maxColumn {
-                self.grid[row][column] = Node(as: .empty, index: (row, column))
-            }
-        }
-        
-//        placing start and destination node
-        self.grid[maxRow/2][maxColumn/3] = Node(as: .start(false), index: (maxRow/2, maxColumn/3))
-        self.grid[maxRow/2][(maxColumn/3) * 2] = Node(as: .destination(false), index: (maxRow/2, (maxColumn/3) * 2))
+    
+    init() {
+        self.grid = []
+        inputState = InputState.none
     }
     
     func updateModel(height: Int, width: Int) {
         self.maxColumn = width / Int(nodeSize)
         self.maxRow = height / Int(nodeSize)
         self.grid = [[Node]](
-            repeating: [Node](repeating: Node(as: .empty, index: (0, 0)), count: maxColumn),
+            repeating: [Node](repeating: Node(as: .empty, coordinate: (0, 0)), count: maxColumn),
             count: maxRow)
 
         for row in 0 ..< maxRow {
             for column in 0 ..< maxColumn {
-                self.grid[row][column] = Node(as: .empty, index: (row, column))
+                self.grid[row][column] = Node(as: .empty, coordinate: (row, column))
             }
         }
         
 //        placing start and destination node
-        self.grid[maxRow/2][maxColumn/3] = Node(as: .start(false), index: (maxRow/2, maxColumn/3))
-        self.grid[maxRow/2][(maxColumn/3) * 2] = Node(as: .destination(false), index: (maxRow/2, (maxColumn/3) * 2))
+        self.grid[maxRow/5][maxColumn/2] = Node(as: .start(false), coordinate: (maxRow/5, maxColumn/2))
+        self.grid[maxRow/5 * 4][(maxColumn/2)] = Node(as: .destination(false), coordinate: (maxRow/5 * 4, maxColumn/2))
+        
+//        notify the view to draw the grid
+        for row in 0 ..< maxRow {
+            for column in 0 ..< maxColumn {
+                updateNodeView(row: row, column: column, state: grid[row][column].nodeState)
+            }
+        }
+        
+        viewNeedUpdate.toggle()
     }
     
-    func wallAction(row: Int, column: Int) {
-        if row != lastUpdatedNode.row || column != lastUpdatedNode.column {
-            grid[row][column].toggleWall()
-            lastUpdatedNode = (row, column)
-            updateNode(row: row, column: column, state: grid[row][column].getState())
-            print("node: [\(row), \(column)] trigger dected!")
-        }
-        else {
-//            print("node: [\(row), \(column)]duplicate trigger dected!")
-        }
-    }
     
 
     
@@ -76,161 +61,176 @@ class GridModel: ObservableObject {
     func handleGridInput(row: Int, column: Int) {
         guard row != lastUpdatedNode.row || column != lastUpdatedNode.column else { return }
         
-        if draggingNode {
-            switch grid[lastUpdatedNode.row][lastUpdatedNode.column].getState() {
+        switch self.inputState {
+        case .dragging:
+            switch grid[lastUpdatedNode.row][lastUpdatedNode.column].nodeState {
             case .start:
-                guard grid[row][column].getState() != .destination(true) && grid[row][column].getState() != .destination(false)  else { return }
+                if case .destination = grid[row][column].nodeState { return }
                 grid[lastUpdatedNode.row][lastUpdatedNode.column].toggleStart()
                 grid[row][column].toggleStart()
                 
-                updateNode(row: lastUpdatedNode.row, column: lastUpdatedNode.column, state: grid[lastUpdatedNode.row][lastUpdatedNode.column].getState())
-                
-                updateNode(row: row, column: column, state: grid[row][column].getState())
+                updateNodeView(row: lastUpdatedNode.row, column: lastUpdatedNode.column, state: grid[lastUpdatedNode.row][lastUpdatedNode.column].nodeState)
                 lastUpdatedNode = (row, column)
+                updateNodeView(row: row, column: column, state: grid[row][column].nodeState)
+                self.viewNeedUpdate.toggle()
                 
 //                instant render pathfinding algorithm if is searched
-                if self.searched {
-                    handleDijkstra()
+                if let algorithm = self.currentAlgorithm {
+                    if searched {
+                        visualizeAlgorithm()
+                    }
                 }
             case .destination:
-                guard grid[row][column].getState() != .start(true) && grid[row][column].getState() != .start(false)  else { return }
+                if case .start = grid[row][column].nodeState { return }
                 grid[lastUpdatedNode.row][lastUpdatedNode.column].toggleDestination()
                 grid[row][column].toggleDestination()
-                
-                updateNode(row: lastUpdatedNode.row, column: lastUpdatedNode.column, state: grid[lastUpdatedNode.row][lastUpdatedNode.column].getState())
-                
-                updateNode(row: row, column: column, state: grid[row][column].getState())
+                                
+                updateNodeView(row: lastUpdatedNode.row, column: lastUpdatedNode.column, state: grid[lastUpdatedNode.row][lastUpdatedNode.column].nodeState)
                 lastUpdatedNode = (row, column)
-                
+                updateNodeView(row: row, column: column, state: grid[row][column].nodeState)
+                self.viewNeedUpdate.toggle()
                 
 //                instant render pathfinding algorithm if is searched
-                if self.searched {
-                    handleDijkstra()
+                if let algorithm = self.currentAlgorithm {
+                    if searched {
+                        visualizeAlgorithm()
+                    }
                 }
             default:
                 break
             }
             
-            
-        }
-        else if drawingWall {
+        case .drawing:
             grid[row][column].toggleWall()
             lastUpdatedNode = (row, column)
-            updateNode(row: row, column: column, state: grid[row][column].getState())
-        }
-        else {
-            switch grid[row][column].getState() {
+            updateNodeView(row: row, column: column, state: grid[row][column].nodeState)
+            self.viewNeedUpdate.toggle()
+        default:
+            switch grid[row][column].nodeState {
             case .start, .destination:
-                print("start dragging")
-                draggingNode = true
+                self.inputState = .dragging
                 lastUpdatedNode = (row, column)
             default:
-                drawingWall = true
+                self.inputState = .drawing
+                grid[row][column].toggleWall()
+                lastUpdatedNode = (row, column)
+                updateNodeView(row: row, column: column, state: grid[row][column].nodeState)
+                self.viewNeedUpdate.toggle()
             }
         }
+        
     }
     
-    func handleClearGrid() {
+    func clearGrid() {
         for row in 0 ..< maxRow {
             for column in 0 ..< maxColumn {
-                if (row == maxRow/2 && column == maxColumn/3) {
+                if (row == maxRow/5 && column == maxColumn/2) {
                     //        placing start node
-                    self.grid[maxRow/2][maxColumn/3].nodeState = .start(false)
-                    updateNode(row: row, column: column, state: .start(false))
+                    self.grid[maxRow/5][maxColumn/2].nodeState = .start(false)
+                    updateNodeView(row: row, column: column, state: grid[row][column].nodeState)
                 }
-                else if (row == maxRow/2 && column == maxColumn/3 * 2) {
+                else if (row == maxRow/5 * 4 && column == maxColumn/2) {
                     //        placing destination node
-                    self.grid[maxRow/2][(maxColumn/3) * 2].nodeState = .destination(false)
-                    updateNode(row: row, column: column, state: .destination(false))
+                    self.grid[maxRow/5 * 4][maxColumn/2].nodeState = .destination(false)
+                    updateNodeView(row: row, column: column, state: grid[row][column].nodeState)
                 }
                 else {
                     self.grid[row][column].nodeState = .empty
-                    updateNode(row: row, column: column, state: .empty)
+                    updateNodeView(row: row, column: column, state: grid[row][column].nodeState)
                 }
             }
         }
         
-        searched = false
+        self.searched = false
+        
+//        notify the view to draw the grid
+        viewNeedUpdate.toggle()
         
     }
     
-    func handleClearWall() {
+    func clearWall() {
         for row in 0 ..< maxRow {
             for column in 0 ..< maxColumn {
-                if grid[row][column].getState() == .wall || grid[row][column].getState() == .visited || grid[row][column].getState() == .path  {
+                switch grid[row][column].nodeState {
+                case .wall, .visited, .path:
                     grid[row][column].nodeState = .empty
-                    updateNode(row: row, column: column, state: .empty)
+                    updateNodeView(row: row, column: column, state: grid[row][column].nodeState)
+                default:
+                    continue
                 }
             }
         }
         
-        searched = false
+        self.searched = false
+//        notify the view to draw the updated grid
+        self.viewNeedUpdate.toggle()
     }
     
     func clearSearch() {
         for row in 0 ..< maxRow {
             for column in 0 ..< maxColumn {
-                if grid[row][column].getState() == .visited || grid[row][column].getState() == .path {
+                switch grid[row][column].nodeState {
+                case .visited, .path:
                     grid[row][column].nodeState = .empty
-                    updateNode(row: row, column: column, state: .empty)
+                    updateNodeView(row: row, column: column, state: .empty)
+                default:
+                    continue
                 }
             }
         }
-        self.nodeNeedAnimate.toggle()
+        
+        self.viewNeedUpdate.toggle()
     }
     
-    func handleDijkstra() {
-        self.clearSearch()
-        let result = dijkstra(grid: &grid)
-//        for visitNode in result.visitedNodes {
-//            let index = visitNode.getIndex()
-//            updateNode(row: index.row, column: index.column, state: visitNode.getState())
-//        }
+    
+//     set the current pathfinding algorithm
+    func setAlgorithm(algorithm: @escaping ([[Node]]) -> (visitedNodes: [Node], shortestPath: [Node]?)) {
+        self.currentAlgorithm = algorithm
+    }
+    
+//    call the given pathfinding algorithm and visualize the returned result
+    func visualizeAlgorithm() {
+        clearSearch()
+        guard let algorithm = self.currentAlgorithm else {return}
+        let result = algorithm(self.grid)
         
         if !searched {
             animateSearch(result: result)
             searched = true
         }
         else {
-            for visitNode in result.visitedNodes {
-                let index = visitNode.getIndex()
-                updateNode(row: index.row, column: index.column, state: .visited)
+            for visitedNode in result.visitedNodes {
+                updateNodeView(row: visitedNode.row, column: visitedNode.column, state: visitedNode.nodeState)
             }
                 
             if let path = result.shortestPath {
                 for node in path {
-                    let index = node.getIndex()
-                    updateNode(row: index.row, column: index.column, state: .path)
+                    updateNodeView(row: node.row, column: node.column, state: .path)
                 }
             }
             
             searched = true
+            
+            self.viewNeedUpdate.toggle()
         }
-        
-//        if let path = result.shortestPath {
-//            for node in path {
-//                let index = node.getIndex()
-//                updateNode(row: index.row, column: index.column, state: .path)
-//            }
-//        }
     }
     
     func animateSearch(result: (visitedNodes: [Node], shortestPath: [Node]?)) {
         var i = 0
         var p = 0
-        _ = Timer.scheduledTimer(withTimeInterval: 0.008, repeats: true) { timer in
+        _ = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
             if i < result.visitedNodes.count {
-                let index = result.visitedNodes[i].getIndex()
-                self.updateNode(row: index.row , column: index.column, state: .visited)
-                self.nodeNeedAnimate.toggle()
+                let node = result.visitedNodes[i]
+                self.updateNodeView(row: node.row, column: node.column, state: .visited)
+                self.viewNeedUpdate.toggle()
                 i += 1
             }
             else {
                 if let path = result.shortestPath {
                     if p < path.count {
-                        let index = path[p].getIndex()
-                        self.updateNode(row: index.row , column: index.column, state: .path)
-                        self.nodeNeedAnimate.toggle()
+                        let node = path[p]
+                        self.updateNodeView(row: node.row, column: node.column, state: .path)
+                        self.viewNeedUpdate.toggle()
                         p += 1
                     }
                     else {
@@ -239,68 +239,25 @@ class GridModel: ObservableObject {
                 }
             }
         }
-        
-//        if let path = result.shortestPath {
-//            _ = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
-//                if p < path.count {
-//                    let index = path[p].getIndex()
-//                    self.updateNode(row: index.row , column: index.column, state: .path)
-//                    self.nodeNeedAnimate.toggle()
-//                    p += 1
-//                }
-//                else {
-//                    timer.invalidate()
-//                }
-//            }
-//        }
-        
-        
-//        var timeOffest = 0.0
-//        for node in result.visitedNodes {
-//            timeOffest += 0.005
-//            DispatchQueue.main.asyncAfter(deadline: .now() + timeOffest) {
-//                let index = node.getIndex()
-//                self.updateNode(row: index.row , column: index.column, state: .visited)
-//                self.nodeNeedAnimate.toggle()
-//            }
-//        }
-        
-//        if let path = result.shortestPath {
-//            for node in path {
-//                timeOffest += 0.05
-//                DispatchQueue.main.asyncAfter(deadline: .now() + timeOffest) {
-//                    let index = node.getIndex()
-//                    self.updateNode(row: index.row, column: index.column, state: .path)
-//                    self.nodeNeedAnimate.toggle()
-//                }
-//            }
-//        }
     }
-//    appends the updated node's information (row, column, state) to the updatedNodeList for the grid controller to update its views
-    func updateNode(row: Int, column: Int, state: NodeState) {
-        self.upDatedNodeList.append(NodeInfo(row: row, column: column, state: state))
+    
+    func updateNodeView(row: Int, column: Int, state: NodeState) {
+        self.updatedNodeList.append((row: row, column: column, state: state))
     }
     
     func resetUpdatedNodeList() {
-        self.upDatedNodeList = []
+        self.updatedNodeList = []
     }
     
     func endAction() {
         self.lastUpdatedNode = (-1, -1)
-        self.draggingNode = false
-        self.drawingWall = false
+        self.inputState = .none
     }
     
 }
 
-struct NodeInfo {
-    var column: Int
-    var row: Int
-    var state: NodeState
-    
-    init(row: Int, column: Int, state: NodeState ) {
-        self.column = column
-        self.row = row
-        self.state = state
-    }
+enum InputState {
+    case none
+    case dragging
+    case drawing
 }

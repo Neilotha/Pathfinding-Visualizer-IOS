@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4249925028B6308600B67179 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4249924F28B6308600B67179 /* Utility.swift */; };
 		4293423E28A4DADE0005D0F2 /* Pathfinding_VisualizerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4293423D28A4DADE0005D0F2 /* Pathfinding_VisualizerApp.swift */; };
 		4293424028A4DADE0005D0F2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4293423F28A4DADE0005D0F2 /* ContentView.swift */; };
 		4293424228A4DAE10005D0F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4293424128A4DAE10005D0F2 /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4249924F28B6308600B67179 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		4293423A28A4DADE0005D0F2 /* Pathfinding Visualizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pathfinding Visualizer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4293423D28A4DADE0005D0F2 /* Pathfinding_VisualizerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pathfinding_VisualizerApp.swift; sourceTree = "<group>"; };
 		4293423F28A4DADE0005D0F2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -116,19 +118,12 @@
 		4293425C28AF5A770005D0F2 /* Algorithm */ = {
 			isa = PBXGroup;
 			children = (
-				4293425D28AF5A900005D0F2 /* Diijkstra */,
+				4249924F28B6308600B67179 /* Utility.swift */,
+				4293425628AB67F10005D0F2 /* MinPriorityQueue.swift */,
+				4293425828AB8C750005D0F2 /* Dijkstra.swift */,
 				4293425E28AF5AB50005D0F2 /* Astar.swift */,
 			);
 			path = Algorithm;
-			sourceTree = "<group>";
-		};
-		4293425D28AF5A900005D0F2 /* Diijkstra */ = {
-			isa = PBXGroup;
-			children = (
-				4293425628AB67F10005D0F2 /* MinPriorityQueue.swift */,
-				4293425828AB8C750005D0F2 /* Dijkstra.swift */,
-			);
-			path = Diijkstra;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -204,6 +199,7 @@
 				4293425528AB60D80005D0F2 /* Control panel View.swift in Sources */,
 				4293425028A610CD0005D0F2 /* GridModel.swift in Sources */,
 				4293424028A4DADE0005D0F2 /* ContentView.swift in Sources */,
+				4249925028B6308600B67179 /* Utility.swift in Sources */,
 				4293425F28AF5AB50005D0F2 /* Astar.swift in Sources */,
 				4293424C28A4DB780005D0F2 /* GridController.swift in Sources */,
 				4293425728AB67F10005D0F2 /* MinPriorityQueue.swift in Sources */,

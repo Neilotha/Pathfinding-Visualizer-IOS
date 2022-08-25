@@ -15,16 +15,21 @@ struct GridView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> GridController {
         model.updateModel(height: height, width: width)
-        let view = GridController(grid: model.grid, maxColumn: model.maxColumn, maxRow: model.maxRow, nodeSize: model.nodeSize, dragCallBack: model.handleGridInput(row:column:), endDragCallBack: model.endAction, resetNodeListCallBack: model.resetUpdatedNodeList)
+        let view = GridController(maxColumn: model.maxColumn,
+                                  maxRow: model.maxRow,
+                                  nodeSize: model.nodeSize,
+                                  nodeViewList: model.updatedNodeList,
+                                  dragCallBack: model.handleGridInput(row:column:),
+                                  endDragCallBack: model.endAction,
+                                  resetNodeListCallBack: model.resetUpdatedNodeList)
         
         return view
     }
     
     func updateUIView(_ uiView: GridController, context: Context) {
         print("UIView update triggered!")
-        uiView.grid = model.grid
-        uiView.updatedNodes = model.upDatedNodeList
-        if model.upDatedNodeList.count > 0 {
+        uiView.updatedNodes = model.updatedNodeList
+        if model.updatedNodeList.count > 0 {
             uiView.setNeedsDisplay()
         }
 

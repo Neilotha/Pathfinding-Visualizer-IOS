@@ -12,21 +12,20 @@ class GridController: UIView {
     class NodeView: UIView {
     }
     
-    var grid: [[Node]]
-    var updatedNodes: [NodeInfo] = []
-    let maxColumn: Int
-    let maxRow: Int
-    let nodeSize: CGFloat
+    var updatedNodes: [(row: Int, column: Int, state: NodeState)] = []
+    var maxColumn: Int
+    var maxRow: Int
+    var nodeSize: CGFloat
     var dragCallBack: (Int, Int) -> Void
     var endDragCallBack: () -> Void
     var resetNodeListCallBack: () -> Void
     var nodeViews: Array<Array<NodeView>>!
     
-    init(grid: [[Node]], maxColumn: Int, maxRow: Int, nodeSize: CGFloat, dragCallBack: @escaping (Int, Int) -> Void, endDragCallBack: @escaping () -> Void, resetNodeListCallBack: @escaping () -> Void) {
-        self.grid = grid
+    init(maxColumn: Int, maxRow: Int, nodeSize: CGFloat, nodeViewList: [(row: Int, column: Int, state: NodeState)], dragCallBack: @escaping (Int, Int) -> Void, endDragCallBack: @escaping () -> Void, resetNodeListCallBack: @escaping () -> Void) {
         self.maxColumn = maxColumn
         self.maxRow = maxRow
         self.nodeSize = nodeSize
+        self.updatedNodes = nodeViewList
         self.dragCallBack = dragCallBack
         self.endDragCallBack = endDragCallBack
         self.resetNodeListCallBack = resetNodeListCallBack
@@ -53,10 +52,11 @@ class GridController: UIView {
         
 //        constructing view
         nodeViews = []
+        
         for y in 0 ..< maxRow {
             nodeViews.append([])
             for x in 0 ..< maxColumn {
-                let nodeView = createNodeView(nodeColor: nodeColor(state: grid[y][x].getState()))
+                let nodeView = createNodeView(color: nodeColor(state: updatedNodes[(x * y) + x].state))
                 nodeView.frame = CGRect(
                     x: CGFloat(x) * nodeSize,
                     y: CGFloat(y) * nodeSize,
@@ -71,9 +71,9 @@ class GridController: UIView {
         
     }
 
-    private func createNodeView(nodeColor: UIColor) -> NodeView {
+    private func createNodeView(color: UIColor) -> NodeView {
         let nodeView = NodeView()
-        nodeView.backgroundColor = nodeColor
+        nodeView.backgroundColor = color
         nodeView.layer.borderWidth = 0.5
         nodeView.layer.borderColor = UIColor.lightGray.cgColor
         nodeView.isUserInteractionEnabled = false

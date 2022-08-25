@@ -9,6 +9,11 @@ import Foundation
 
 struct MinPriorityQueue {
     var heap: [Node] = []
+    let isHigherPriority: (PriorityInfoProtocol, PriorityInfoProtocol) -> Bool
+    
+    init(priorityFunction: @escaping (PriorityInfoProtocol, PriorityInfoProtocol) -> Bool) {
+        self.isHigherPriority = priorityFunction
+    }
     
     func getParent(_ i: Int) -> Int {
         (i - 1) / 2
@@ -31,7 +36,7 @@ struct MinPriorityQueue {
 //    shift up the node inorder to maintain the heap priority
     mutating func shiftUp(_ i: Int) {
         var currentNode = i
-        while i > 0 && heap[currentNode].distance < heap[getParent(currentNode)].distance {
+        while i > 0 && isHigherPriority(heap[currentNode].priorityInfo!, heap[getParent(currentNode)].priorityInfo!)  {
 //            swap parent and current node
             swap(currentNode, getParent(currentNode))
         
@@ -47,13 +52,13 @@ struct MinPriorityQueue {
         
 //        compare with left child
         let l = getLeftChild(i)
-        if l < heap.count && heap[l].distance < heap[minIndex].distance {
+        if l < heap.count && isHigherPriority(heap[l].priorityInfo!, heap[minIndex].priorityInfo!) {
             minIndex = l
         }
         
 //        compare with right child
         let r = getRightChild(i)
-        if r < heap.count && heap[r].distance < heap[minIndex].distance {
+        if r < heap.count && isHigherPriority(heap[r].priorityInfo!, heap[minIndex].priorityInfo!) {
             minIndex = r
         }
         
@@ -64,7 +69,7 @@ struct MinPriorityQueue {
         }
     }
     
-    mutating func inert(_ p: Node) {
+    mutating func insert(_ p: Node) {
         heap.append(p)
         heap[heap.count - 1].inQueue = true
         shiftUp(heap.count - 1)
@@ -80,11 +85,12 @@ struct MinPriorityQueue {
         return result
     }
     
-    mutating func changePriority(_ i: Int, _ p: Int) {
-        let oldP = heap[i].distance
-        heap[i].distance = p
+    mutating func changePriority(_ i: Int, _ p: PriorityInfoProtocol) {
+        let oldP = heap[i].priorityInfo!
+        heap[i].priorityInfo = p
         
-        if p < oldP {
+        
+        if isHigherPriority(p, oldP) {
             shiftUp(i)
         }
         else {
@@ -97,10 +103,10 @@ struct MinPriorityQueue {
     }
     
     mutating func remove(i: Int) {
-        heap[i].distance = getMin().distance - 1
-        
-        shiftUp(i)
+        swap(i, 0)
         extractMin()
+        shiftUp(i)
+        
     }
     
     func getIndex(of node: Node) -> Int {
