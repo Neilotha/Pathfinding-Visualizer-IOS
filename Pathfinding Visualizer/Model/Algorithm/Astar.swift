@@ -24,7 +24,10 @@ func aStar(grid: [[Node]]) -> (visitedNodes: [Node], shortestPath: [Node]?) {
     
     while openList.heap.count > 0 && !foundShortestPath {
 //        Find the node with the highest priority and pop it
+//        openList.buildHeap()
         let currentNode = openList.extractMin()
+        
+        
 //        Push currentNode into the closedList
         closedList.append(currentNode)
 //        If the currentNode is the destination, stop the search
@@ -32,26 +35,28 @@ func aStar(grid: [[Node]]) -> (visitedNodes: [Node], shortestPath: [Node]?) {
         else {
             visitedNodes.append(currentNode)
             currentNode.visite()
+            
 //            find the current node's neighbors
             let neighborNodes = getAdjacentNodes(grid: grid, of: currentNode, filterVisited: false)
+            print("neighbor count: \(neighborNodes.count)")
             for neighbor in neighborNodes {
 //                calculate distance and heuristic of the neighbor passing through currentNode
-                let newNeighborPriority = calculatePriority(of: neighbor, through: currentNode, destination: destinationNode)
                 let neighborCurrentPriority = neighbor.priorityInfo as! aStarPriority
+                let newNeighborPriority = calculatePriority(of: neighbor, through: currentNode, destination: destinationNode)
 //                if the new path to neighbor has shorter distance than it's previous path
-                if aStarPriorityFunction(priority1: newNeighborPriority, priority2: neighborCurrentPriority){
+                if newNeighborPriority.distance < neighborCurrentPriority.distance {
                     if closedList.contains(neighbor) {
                         neighbor.priorityInfo = newNeighborPriority
                         neighbor.previousNode = currentNode
                     }
-                    else if openList.heap.contains(neighbor) {
+                    else if neighbor.inQueue {
     //                  update the neighbor's priority and set its parent to currentNode
                         openList.changePriority(openList.getIndex(of: neighbor), newNeighborPriority)
                         neighbor.previousNode = currentNode
                     }
-    //                if the neighbor isn't in both list
-                    else if !closedList.contains(neighbor) && !openList.heap.contains(neighbor) {
-    //                    add it to the open list and set its priority
+        //                if the neighbor isn't in both list
+                    else if !closedList.contains(neighbor) && !neighbor.inQueue {
+        //                    add it to the open list and set its priority
                         neighbor.priorityInfo = newNeighborPriority
                         neighbor.previousNode = currentNode
                         openList.insert(neighbor)
@@ -59,6 +64,7 @@ func aStar(grid: [[Node]]) -> (visitedNodes: [Node], shortestPath: [Node]?) {
                 }
             }
         }
+        
         
     }
     
@@ -119,3 +125,5 @@ fileprivate func calculatePriority(of node1: Node, through node2: Node, destinat
     
     return aStarPriority(distance: distance, heuristic: heuristic)
 }
+
+

@@ -75,7 +75,7 @@ class GridModel: ObservableObject {
                 self.viewNeedUpdate.toggle()
                 
 //                instant render pathfinding algorithm if is searched
-                if let algorithm = self.currentAlgorithm {
+                if self.currentAlgorithm != nil {
                     if searched {
                         visualizeAlgorithm()
                     }
@@ -91,7 +91,7 @@ class GridModel: ObservableObject {
                 self.viewNeedUpdate.toggle()
                 
 //                instant render pathfinding algorithm if is searched
-                if let algorithm = self.currentAlgorithm {
+                if self.currentAlgorithm != nil {
                     if searched {
                         visualizeAlgorithm()
                     }
@@ -218,7 +218,7 @@ class GridModel: ObservableObject {
     func animateSearch(result: (visitedNodes: [Node], shortestPath: [Node]?)) {
         var i = 0
         var p = 0
-        _ = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
+        _ = Timer.scheduledTimer(withTimeInterval: 0.08, repeats: true) { timer in
             if i < result.visitedNodes.count {
                 let node = result.visitedNodes[i]
                 self.updateNodeView(row: node.row, column: node.column, state: .visited)

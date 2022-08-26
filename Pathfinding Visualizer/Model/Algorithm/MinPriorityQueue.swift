@@ -28,20 +28,19 @@ struct MinPriorityQueue {
     }
     
     mutating func swap(_ i: Int,_ j: Int) {
-        let tmp = heap[i]
-        heap[i] = heap[j]
-        heap[j] = tmp
+        guard i != j else { return }
+        heap.swapAt(i, j)
     }
     
 //    shift up the node inorder to maintain the heap priority
     mutating func shiftUp(_ i: Int) {
-        var currentNode = i
-        while i > 0 && isHigherPriority(heap[currentNode].priorityInfo!, heap[getParent(currentNode)].priorityInfo!)  {
+        var index = i
+        while index > 0 && self.isHigherPriority(heap[index].priorityInfo!, heap[getParent(index)].priorityInfo!)  {
 //            swap parent and current node
-            swap(currentNode, getParent(currentNode))
+            swap(index, getParent(index))
         
             
-            currentNode = getParent(currentNode)
+            index = getParent(index)
             
         }
         
@@ -52,13 +51,13 @@ struct MinPriorityQueue {
         
 //        compare with left child
         let l = getLeftChild(i)
-        if l < heap.count && isHigherPriority(heap[l].priorityInfo!, heap[minIndex].priorityInfo!) {
+        if l < heap.count && self.isHigherPriority(heap[l].priorityInfo!, heap[minIndex].priorityInfo!) {
             minIndex = l
         }
         
 //        compare with right child
         let r = getRightChild(i)
-        if r < heap.count && isHigherPriority(heap[r].priorityInfo!, heap[minIndex].priorityInfo!) {
+        if r < heap.count && self.isHigherPriority(heap[r].priorityInfo!, heap[minIndex].priorityInfo!) {
             minIndex = r
         }
         
@@ -70,13 +69,15 @@ struct MinPriorityQueue {
     }
     
     mutating func insert(_ p: Node) {
+        p.inQueue = true
         heap.append(p)
-        heap[heap.count - 1].inQueue = true
         shiftUp(heap.count - 1)
     }
     
     mutating func extractMin() -> Node {
-        let result = heap.removeFirst()
+        heap.swapAt(0, heap.count - 1)
+        let result = heap.removeLast()
+        result.inQueue = false
         
         if heap.count > 0 {
             shiftDown(0)
@@ -102,15 +103,15 @@ struct MinPriorityQueue {
         heap[0]
     }
     
-    mutating func remove(i: Int) {
-        swap(i, 0)
-        extractMin()
-        shiftUp(i)
-        
-    }
     
     func getIndex(of node: Node) -> Int {
         heap.firstIndex(of: node)!
+    }
+    
+    mutating func buildHeap() {
+        for index in (0 ..< heap.count / 2).reversed() {
+            shiftDown(index)
+        }
     }
 }
 

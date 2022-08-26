@@ -58,36 +58,33 @@ func getAdjacentNodes(grid: [[Node]], of node: Node, filterVisited: Bool) -> [No
 //    get the neighbor to the right
     if node.column < grid[0].count - 1 {
         if grid[node.row][node.column + 1].nodeState != .wall {
-            if !(filterVisited && grid[node.row][node.column + 1].nodeState == .visited) {
-                neighborNodes.append(grid[node.row][node.column + 1])
-            }
+            neighborNodes.append(grid[node.row][node.column + 1])
         }
     }
 //    get the neighbor to the left
     if node.column > 0 {
         if grid[node.row][node.column - 1].nodeState != .wall {
-            if !(filterVisited && grid[node.row][node.column - 1].nodeState == .visited) {
-                neighborNodes.append(grid[node.row][node.column - 1])
-            }
+            neighborNodes.append(grid[node.row][node.column - 1])
         }
     }
 //    get the neighbor to the top
     if node.row > 0 {
         if grid[node.row - 1][node.column].nodeState != .wall {
-            if !(filterVisited && grid[node.row - 1][node.column].nodeState == .visited) {
-                neighborNodes.append(grid[node.row - 1][node.column])
-            }
+            neighborNodes.append(grid[node.row - 1][node.column])
         }
     }
 //    get the neighbor to the bottom
     if node.row < grid.count - 1 {
         if grid[node.row + 1][node.column].nodeState != .wall {
-            if !(filterVisited && grid[node.row + 1][node.column].nodeState == .visited) {
-                neighborNodes.append(grid[node.row + 1][node.column])
-            }
+            neighborNodes.append(grid[node.row + 1][node.column])
         }
+    }
+    
+    if filterVisited {
+        neighborNodes = neighborNodes.filter { $0.nodeState != .visited }
     }
     
     return neighborNodes
     
 }
+
