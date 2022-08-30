@@ -18,7 +18,6 @@ struct Algorithm_Picker: View {
     
     var body: some View {
         HStack {
-            Text("Algorithm: ")
             Picker("Algorithm:", selection: $selectedAlgorithm) {
                 Text("Diijkstra")
                     .tag(Algorithms.diijkstra)

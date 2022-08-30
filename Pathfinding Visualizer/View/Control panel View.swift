@@ -30,22 +30,23 @@ struct Control_panel_View: View {
             
             Spacer()
             
-            Button("Reset Board") {
-                model.searched = false
-                model.clearGrid()
-            }
-            
-            Spacer()
-            
-            Button("Clear Wall") {
-                model.clearWall()
-            }
-            
-            Spacer()
-            
-            Button("Clear Search") {
-                model.clearSearch()
-            }
+//            Button("Reset Board") {
+//                model.searched = false
+//                model.clearGrid()
+//            }
+//
+//            Spacer()
+//
+//            Button("Clear Wall") {
+//                model.clearWall()
+//            }
+//
+//            Spacer()
+//
+//            Button("Clear Search") {
+//                model.clearSearch()
+//            }
+            Clear_Grid_Picker(model: model)
             
             Spacer()
         }

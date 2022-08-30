@@ -128,6 +128,7 @@ class GridModel: ObservableObject {
     }
     
     func clearGrid() {
+        guard !playingAnimation else { return }
         for row in 0 ..< maxRow {
             for column in 0 ..< maxColumn {
                 if (row == maxRow/5 && column == maxColumn/2) {
@@ -155,6 +156,7 @@ class GridModel: ObservableObject {
     }
     
     func clearWall() {
+        guard !playingAnimation else { return }
         for row in 0 ..< maxRow {
             for column in 0 ..< maxColumn {
                 switch grid[row][column].nodeState {
@@ -173,6 +175,7 @@ class GridModel: ObservableObject {
     }
     
     func clearSearch() {
+        guard !playingAnimation else { return }
         for row in 0 ..< maxRow {
             for column in 0 ..< maxColumn {
                 switch grid[row][column].nodeState {
