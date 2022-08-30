@@ -26,6 +26,7 @@ class GridModel: ObservableObject {
     init() {
         self.grid = []
         inputState = InputState.none
+        currentAlgorithm = dijkstra
     }
     
     func updateModel(height: Int, width: Int) {

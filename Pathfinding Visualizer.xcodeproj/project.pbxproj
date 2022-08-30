@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4249925028B6308600B67179 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4249924F28B6308600B67179 /* Utility.swift */; };
+		4278F02228BDEBA8007937F6 /* Algorithm Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278F02128BDEBA8007937F6 /* Algorithm Picker.swift */; };
 		4293423E28A4DADE0005D0F2 /* Pathfinding_VisualizerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4293423D28A4DADE0005D0F2 /* Pathfinding_VisualizerApp.swift */; };
 		4293424028A4DADE0005D0F2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4293423F28A4DADE0005D0F2 /* ContentView.swift */; };
 		4293424228A4DAE10005D0F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4293424128A4DAE10005D0F2 /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		4249924F28B6308600B67179 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		4278F02128BDEBA8007937F6 /* Algorithm Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Algorithm Picker.swift"; sourceTree = "<group>"; };
 		4293423A28A4DADE0005D0F2 /* Pathfinding Visualizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pathfinding Visualizer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4293423D28A4DADE0005D0F2 /* Pathfinding_VisualizerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pathfinding_VisualizerApp.swift; sourceTree = "<group>"; };
 		4293423F28A4DADE0005D0F2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				4293423D28A4DADE0005D0F2 /* Pathfinding_VisualizerApp.swift */,
 				4293423F28A4DADE0005D0F2 /* ContentView.swift */,
 				4293425428AB60D80005D0F2 /* Control panel View.swift */,
+				4278F02128BDEBA8007937F6 /* Algorithm Picker.swift */,
 				4293425A28ADEB4C0005D0F2 /* Grid */,
 			);
 			path = View;
@@ -198,6 +201,7 @@
 			files = (
 				4293425528AB60D80005D0F2 /* Control panel View.swift in Sources */,
 				4293425028A610CD0005D0F2 /* GridModel.swift in Sources */,
+				4278F02228BDEBA8007937F6 /* Algorithm Picker.swift in Sources */,
 				4293424028A4DADE0005D0F2 /* ContentView.swift in Sources */,
 				4249925028B6308600B67179 /* Utility.swift in Sources */,
 				4293425F28AF5AB50005D0F2 /* Astar.swift in Sources */,

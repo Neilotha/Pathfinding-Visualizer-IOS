@@ -14,19 +14,19 @@ struct Control_panel_View: View {
         HStack {
             Spacer()
             
-            Button("Dijkstra") {
-                model.searched = false
-                model.setAlgorithm(algorithm: dijkstra)
-                model.visualizeAlgorithm()
-            }
-            
-            Spacer()
-            
-            Button("A*") {
-                model.searched = false
-                model.setAlgorithm(algorithm: aStar)
-                model.visualizeAlgorithm()
-            }
+//            Button("Dijkstra") {
+//                model.searched = false
+//                model.setAlgorithm(algorithm: dijkstra)
+//                model.visualizeAlgorithm()
+//            }
+//
+//
+//            Button("A*") {
+//                model.searched = false
+//                model.setAlgorithm(algorithm: aStar)
+//                model.visualizeAlgorithm()
+//            }
+            Algorithm_Picker(model: model)
             
             Spacer()
             
@@ -47,6 +47,7 @@ struct Control_panel_View: View {
                 model.clearSearch()
             }
             
+            Spacer()
         }
     }
 }

@@ -37,7 +37,6 @@ func aStar(grid: [[Node]]) -> (visitedNodes: [Node], shortestPath: [Node]?) {
             
 //            find the current node's neighbors
             let neighborNodes = getAdjacentNodes(grid: grid, of: currentNode, filterVisited: false)
-            print("neighbor count: \(neighborNodes.count)")
             for neighbor in neighborNodes {
 //                calculate distance and heuristic of the neighbor passing through currentNode
                 let neighborCurrentPriority = neighbor.priorityInfo as! aStarPriority
