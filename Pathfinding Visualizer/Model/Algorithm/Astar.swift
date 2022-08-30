@@ -24,7 +24,6 @@ func aStar(grid: [[Node]]) -> (visitedNodes: [Node], shortestPath: [Node]?) {
     
     while openList.heap.count > 0 && !foundShortestPath {
 //        Find the node with the highest priority and pop it
-//        openList.buildHeap()
         let currentNode = openList.extractMin()
         
         

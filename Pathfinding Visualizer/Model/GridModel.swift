@@ -17,6 +17,7 @@ class GridModel: ObservableObject {
     let nodeSize: CGFloat = 20
     var currentAlgorithm: (([[Node]]) -> (visitedNodes: [Node], shortestPath: [Node]?))?
     var searched: Bool = false
+    var playingAnimation = false
     var inputState: InputState
     var lastUpdatedNode = (row: -1, column: -1)
     
@@ -28,6 +29,9 @@ class GridModel: ObservableObject {
     }
     
     func updateModel(height: Int, width: Int) {
+        self.lastUpdatedNode = (row: -1, column: -1)
+        self.searched = false
+        self.playingAnimation = false
         self.maxColumn = width / Int(nodeSize)
         self.maxRow = height / Int(nodeSize)
         self.grid = [[Node]](
@@ -59,6 +63,7 @@ class GridModel: ObservableObject {
     
 //    function for handling grid input, its purpose is to determine if the user is drawing a wall or dragging star/destinaion node
     func handleGridInput(row: Int, column: Int) {
+        guard !playingAnimation else { return }
         guard row != lastUpdatedNode.row || column != lastUpdatedNode.column else { return }
         
         switch self.inputState {
@@ -218,7 +223,8 @@ class GridModel: ObservableObject {
     func animateSearch(result: (visitedNodes: [Node], shortestPath: [Node]?)) {
         var i = 0
         var p = 0
-        _ = Timer.scheduledTimer(withTimeInterval: 0.08, repeats: true) { timer in
+        playingAnimation = true
+        _ = Timer.scheduledTimer(withTimeInterval: 0.008, repeats: true) { timer in
             if i < result.visitedNodes.count {
                 let node = result.visitedNodes[i]
                 self.updateNodeView(row: node.row, column: node.column, state: .visited)
@@ -235,6 +241,7 @@ class GridModel: ObservableObject {
                     }
                     else {
                         timer.invalidate()
+                        self.playingAnimation = false
                     }
                 }
             }

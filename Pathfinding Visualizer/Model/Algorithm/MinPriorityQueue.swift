@@ -75,6 +75,7 @@ struct MinPriorityQueue {
     }
     
     mutating func extractMin() -> Node {
+    
         heap.swapAt(0, heap.count - 1)
         let result = heap.removeLast()
         result.inQueue = false
@@ -108,9 +109,10 @@ struct MinPriorityQueue {
         heap.firstIndex(of: node)!
     }
     
+
     mutating func buildHeap() {
         for index in (0 ..< heap.count / 2).reversed() {
-            shiftDown(index)
+            shiftDown( index)
         }
     }
 }

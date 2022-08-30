@@ -120,7 +120,16 @@ class GridController: UIView {
         dragCallBack(y, x)
     }
     
+    func clear() {
+        for row in 0 ..< maxRow {
+            for column in  0 ..< maxColumn {
+                nodeViews[row][column].removeFromSuperview()
+            }
+        }
+    }
+    
     override func draw(_ rect: CGRect) {
+        
         for nodeInfo in updatedNodes {
 //            print("node view: [\(nodeInfo.row), \(nodeInfo.column)] update")
             nodeViews[nodeInfo.row][nodeInfo.column].backgroundColor = nodeColor(state: nodeInfo.state)
