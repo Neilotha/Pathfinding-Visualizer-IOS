@@ -23,8 +23,8 @@ struct Clear_Grid_Picker: View {
             Picker("Algorithm:", selection: $selectedAction) {
                 Text("Clear Wall")
                     .tag(Actions.clearWall)
-                Text("Clear Search")
-                    .tag(Actions.clearSearch)
+//                Text("Clear Search")
+//                    .tag(Actions.clearSearch)
                 Text("Reset Board")
                     .tag(Actions.resetBoard)
             }

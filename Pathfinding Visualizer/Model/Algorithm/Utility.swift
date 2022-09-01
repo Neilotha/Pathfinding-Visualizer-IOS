@@ -52,6 +52,17 @@ func findShortestPath(destination: Node) -> [Node] {
     return shortestPath
 }
 
+// calculate the distance of the shortest path
+func calculateDistance(shortestPath: [Node]?) -> Int {
+    var distance = 0
+    guard shortestPath != nil else { return -1 }
+    for _ in shortestPath! {
+        distance += 1
+    }
+    
+    return distance
+}
+
 // get the adjacent nodes of the given node
 func getAdjacentNodes(grid: [[Node]], of node: Node, filterVisited: Bool) -> [Node] {
     var neighborNodes:[Node] = []

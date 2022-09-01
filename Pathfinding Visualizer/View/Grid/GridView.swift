@@ -28,11 +28,11 @@ struct GridView: UIViewRepresentable {
     
     func updateUIView(_ uiView: GridController, context: Context) {
         uiView.updatedNodes = model.updatedNodeList
-        if uiView.maxRow != model.maxRow || uiView.maxColumn != model.maxColumn {
+        if model.redrawGrid {
             uiView.clear()
             uiView.maxRow = model.maxRow
             uiView.maxColumn = model.maxColumn
-            uiView.setupView()
+            uiView.redrawView(redrawGrid: &model.redrawGrid)
             uiView.setNeedsDisplay()
         }
         else if model.updatedNodeList.count > 0 {

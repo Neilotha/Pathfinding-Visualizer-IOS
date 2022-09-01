@@ -12,43 +12,23 @@ struct Control_panel_View: View {
     
     var body: some View {
         HStack {
-            Spacer()
+            Stats(model: model)
             
-//            Button("Dijkstra") {
-//                model.searched = false
-//                model.setAlgorithm(algorithm: dijkstra)
-//                model.visualizeAlgorithm()
-//            }
-//
-//
-//            Button("A*") {
-//                model.searched = false
-//                model.setAlgorithm(algorithm: aStar)
-//                model.visualizeAlgorithm()
-//            }
+            Spacer()
+            Button("Reset!") {
+                model.searched = false
+                model.clearGrid()
+            }
+            .font(.system(size: 15))
+            .padding()
+            .background(.blue)
+            .cornerRadius(9)
+            .foregroundColor(.white)
+            
+            Spacer()
             Algorithm_Picker(model: model)
-            
             Spacer()
-            
-//            Button("Reset Board") {
-//                model.searched = false
-//                model.clearGrid()
-//            }
-//
-//            Spacer()
-//
-//            Button("Clear Wall") {
-//                model.clearWall()
-//            }
-//
-//            Spacer()
-//
-//            Button("Clear Search") {
-//                model.clearSearch()
-//            }
-            Clear_Grid_Picker(model: model)
-            
-            Spacer()
+
         }
     }
 }

@@ -10,6 +10,8 @@ import SwiftUI
 
 class GridModel: ObservableObject {
     @Published var viewNeedUpdate: Bool = false
+    @Published var shortestPathDistance: Int = -1
+    var redrawGrid = false
     var grid: [[Node]] = []
     var updatedNodeList: [(row: Int, column: Int, state: NodeState)] = []
     var maxColumn: Int = 0
@@ -20,6 +22,7 @@ class GridModel: ObservableObject {
     var playingAnimation = false
     var inputState: InputState
     var lastUpdatedNode = (row: -1, column: -1)
+    var timer: Timer?
     
     
     
@@ -30,9 +33,11 @@ class GridModel: ObservableObject {
     }
     
     func updateModel(height: Int, width: Int) {
+        self.shortestPathDistance = -1
         self.lastUpdatedNode = (row: -1, column: -1)
         self.searched = false
         self.playingAnimation = false
+        self.redrawGrid = true
         self.maxColumn = width / Int(nodeSize)
         self.maxRow = height / Int(nodeSize)
         self.grid = [[Node]](
@@ -45,15 +50,26 @@ class GridModel: ObservableObject {
             }
         }
         
-//        placing start and destination node
-        self.grid[maxRow/5][maxColumn/2] = Node(as: .start(false), coordinate: (maxRow/5, maxColumn/2))
-        self.grid[maxRow/5 * 4][(maxColumn/2)] = Node(as: .destination(false), coordinate: (maxRow/5 * 4, maxColumn/2))
+//        placing start and 
+        if maxRow > maxColumn {
+            self.grid[maxRow/5][maxColumn/2] = Node(as: .start(false), coordinate: (maxRow/5, maxColumn/2))
+            self.grid[maxRow/5 * 4][(maxColumn/2)] = Node(as: .destination(false), coordinate: (maxRow/5 * 4, maxColumn/2))
+        }
+        else {
+            self.grid[maxRow/2][maxColumn/5] = Node(as: .start(false), coordinate: (maxRow/2, maxColumn/5))
+            self.grid[maxRow/2][(maxColumn/5 * 4)] = Node(as: .destination(false), coordinate: (maxRow/2, maxColumn/5 * 4))
+        }
         
 //        notify the view to draw the grid
         for row in 0 ..< maxRow {
             for column in 0 ..< maxColumn {
                 updateNodeView(row: row, column: column, state: grid[row][column].nodeState)
             }
+        }
+        
+        if self.timer != nil {
+            timer!.invalidate()
+            timer = nil
         }
         
         viewNeedUpdate.toggle()
@@ -149,6 +165,7 @@ class GridModel: ObservableObject {
         }
         
         self.searched = false
+        self.shortestPathDistance = -1
         
 //        notify the view to draw the grid
         viewNeedUpdate.toggle()
@@ -170,6 +187,7 @@ class GridModel: ObservableObject {
         }
         
         self.searched = false
+        self.shortestPathDistance = -1
 //        notify the view to draw the updated grid
         self.viewNeedUpdate.toggle()
     }
@@ -188,6 +206,7 @@ class GridModel: ObservableObject {
             }
         }
         
+        self.shortestPathDistance = -1
         self.viewNeedUpdate.toggle()
     }
     
@@ -199,12 +218,17 @@ class GridModel: ObservableObject {
     
 //    call the given pathfinding algorithm and visualize the returned result
     func visualizeAlgorithm() {
+        guard !playingAnimation else { return }
         clearSearch()
-        guard let algorithm = self.currentAlgorithm else {return}
+        guard let algorithm = self.currentAlgorithm else { return }
         let result = algorithm(self.grid)
         
+        if let shortestPath = result.shortestPath {
+            self.shortestPathDistance = calculateDistance(shortestPath: shortestPath)
+        }
+        
         if !searched {
-            animateSearch(result: result)
+            self.timer = animateSearch(result: result)
             searched = true
         }
         else {
@@ -224,11 +248,11 @@ class GridModel: ObservableObject {
         }
     }
     
-    func animateSearch(result: (visitedNodes: [Node], shortestPath: [Node]?)) {
+    func animateSearch(result: (visitedNodes: [Node], shortestPath: [Node]?)) -> Timer {
         var i = 0
         var p = 0
         playingAnimation = true
-        _ = Timer.scheduledTimer(withTimeInterval: 0.008, repeats: true) { timer in
+        let animateTimer = Timer.scheduledTimer(withTimeInterval: 0.008, repeats: true) { timer in
             if i < result.visitedNodes.count {
                 let node = result.visitedNodes[i]
                 self.updateNodeView(row: node.row, column: node.column, state: .visited)
@@ -250,6 +274,8 @@ class GridModel: ObservableObject {
                 }
             }
         }
+        
+        return animateTimer
     }
     
     func updateNodeView(row: Int, column: Int, state: NodeState) {

@@ -39,6 +39,7 @@ struct Algorithm_Picker: View {
                 model.searched = false
                 model.visualizeAlgorithm()
             }
+            .font(.system(size: 15))
             .padding()
             .background(.blue)
             .cornerRadius(9)

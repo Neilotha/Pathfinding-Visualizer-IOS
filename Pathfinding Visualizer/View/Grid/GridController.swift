@@ -41,6 +41,37 @@ class GridController: UIView {
     
     
     
+    func redrawView(redrawGrid: inout Bool) {
+//        setup gesture recognizer
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleDrag(sender:)))
+        tapGestureRecognizer.delegate = self
+
+        let dragGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleDrag(sender: )))
+        dragGestureRecognizer.minimumPressDuration = 0
+        addGestureRecognizer(dragGestureRecognizer)
+        
+//        constructing view
+        nodeViews = []
+        
+        for y in 0 ..< maxRow {
+            nodeViews.append([])
+            for x in 0 ..< maxColumn {
+                let nodeView = createNodeView(color: nodeColor(state: updatedNodes[(x * y) + x].state))
+                nodeView.frame = CGRect(
+                    x: CGFloat(x) * nodeSize,
+                    y: CGFloat(y) * nodeSize,
+                    width: nodeSize,
+                    height: nodeSize
+                )
+                nodeViews[y].append(nodeView)
+                addSubview(nodeView)
+            }
+        }
+        isUserInteractionEnabled = true
+        redrawGrid = false
+        
+    }
+
     func setupView() {
 //        setup gesture recognizer
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleDrag(sender:)))
@@ -132,7 +163,9 @@ class GridController: UIView {
         
         for nodeInfo in updatedNodes {
 //            print("node view: [\(nodeInfo.row), \(nodeInfo.column)] update")
-            nodeViews[nodeInfo.row][nodeInfo.column].backgroundColor = nodeColor(state: nodeInfo.state)
+            if nodeInfo.row < maxRow && nodeInfo.column < maxColumn {
+                nodeViews[nodeInfo.row][nodeInfo.column].backgroundColor = nodeColor(state: nodeInfo.state)
+            }
         }
         resetNodeListCallBack()
     }

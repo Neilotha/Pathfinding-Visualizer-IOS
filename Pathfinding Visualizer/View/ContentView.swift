@@ -30,6 +30,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
+            Spacer()
             Control_panel_View(model: model)
         
             GeometryReader { geo in
@@ -45,5 +46,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .previewInterfaceOrientation(.portraitUpsideDown)
     }
 }
