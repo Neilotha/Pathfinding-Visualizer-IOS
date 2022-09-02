@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 class GridController: UIView {
     class NodeView: UIView {
@@ -115,17 +116,17 @@ class GridController: UIView {
         var color: UIColor
         switch state {
         case .start:
-            color = .green
+            color = UIColor(Color.startColor)
         case .destination:
-            color = .red
+            color = UIColor(Color.destinationColor)
         case .visited:
-            color = .blue
+            color = UIColor(Color.visitColor)
         case .wall:
-            color = .black
+            color = UIColor(Color.wallColor)
         case .path:
-            color = .yellow
+            color = UIColor(Color.pathColor)
         case .empty:
-            color = .white
+            color = UIColor(Color.emptyColor)
         }
         
         return color
@@ -178,4 +179,13 @@ extension GridController: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
+}
+
+extension Color {
+    static let visitColor = Color("VisitColor")
+    static let startColor = Color("StartColor")
+    static let destinationColor = Color("DestinationColor")
+    static let pathColor = Color("PathColor")
+    static let wallColor = Color("WallColor")
+    static let emptyColor = Color("EmptyColor")
 }

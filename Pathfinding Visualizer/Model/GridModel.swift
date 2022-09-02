@@ -23,6 +23,7 @@ class GridModel: ObservableObject {
     var inputState: InputState
     var lastUpdatedNode = (row: -1, column: -1)
     var timer: Timer?
+    var animationSpeed: Double = 0.008
     
     
     
@@ -252,7 +253,7 @@ class GridModel: ObservableObject {
         var i = 0
         var p = 0
         playingAnimation = true
-        let animateTimer = Timer.scheduledTimer(withTimeInterval: 0.008, repeats: true) { timer in
+        let animateTimer = Timer.scheduledTimer(withTimeInterval: self.animationSpeed, repeats: true) { timer in
             if i < result.visitedNodes.count {
                 let node = result.visitedNodes[i]
                 self.updateNodeView(row: node.row, column: node.column, state: .visited)
@@ -276,6 +277,10 @@ class GridModel: ObservableObject {
         }
         
         return animateTimer
+    }
+
+    func setAnimationSpeed(speed: Double) {
+        self.animationSpeed = speed
     }
     
     func updateNodeView(row: Int, column: Int, state: NodeState) {

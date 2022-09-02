@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum Algorithms {
+fileprivate enum Algorithms {
     case diijkstra
     case aStar
 }
@@ -24,13 +24,15 @@ struct Algorithm_Picker: View {
                 Text("A Star")
                     .tag(Algorithms.aStar)
             }
-            .pickerStyle(.menu)
+            .pickerStyle(MenuPickerStyle())
             .onChange(of: selectedAlgorithm) { tag in
                 switch tag {
                 case .diijkstra:
                     model.setAlgorithm(algorithm: dijkstra)
+                    model.setAnimationSpeed(speed: 0.008)
                 case .aStar:
                     model.setAlgorithm(algorithm: aStar)
+                    model.setAnimationSpeed(speed: 0.02)
                 }
             
             }
