@@ -38,7 +38,6 @@ class GridModel: ObservableObject {
         self.lastUpdatedNode = (row: -1, column: -1)
         self.searched = false
         self.playingAnimation = false
-        self.redrawGrid = true
         self.maxColumn = width / Int(nodeSize)
         self.maxRow = height / Int(nodeSize)
         self.grid = [[Node]](
@@ -73,6 +72,7 @@ class GridModel: ObservableObject {
             timer = nil
         }
         
+        self.redrawGrid = true
         viewNeedUpdate.toggle()
     }
     

@@ -58,7 +58,6 @@ struct ContentView: View {
                 GridView(model: self.model, height: Int(geo.size.height), width: Int(geo.size.width))
                     .onRotate { newOrientation in
                         if self.orientation.newOrientation(newOrientation) {
-                            print(orientation)
                             model.updateModel(
                                 height: Int(geo.size.height),
                                 width: Int(geo.size.width))
