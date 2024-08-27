@@ -1,3 +1,3 @@
 # Pathfinding-Visualizer-IOS
-
-You can contact me at seabed.glyph07@icloud.com
+The app "Path Finding Visualizer" can be found on the IOS appstore
+Video demo: https://www.youtube.com/shorts/iQXcDhEmcfE
